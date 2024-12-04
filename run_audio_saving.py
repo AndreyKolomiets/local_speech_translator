@@ -1,12 +1,23 @@
 import pyaudio
 import wave
 import os
+import argparse
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
-def write_one_batch(batch_num):
+def get_default_input_device_index() -> int:
+    audio_mock = pyaudio.PyAudio()
+    device_idx = 0
+    while True:
+        info = audio_mock.get_device_info_by_index(device_index=device_idx)
+        if info['name'] == os.environ['DEFAULT_INPUT_DEVICE_NAME']:
+            return info['index']
+        device_idx += 1
+
+
+def write_one_batch(batch_num, input_device_index, folder):
     # Parameters
     FORMAT = pyaudio.paInt16  # Audio format
     CHANNELS = 1  # Number of audio channels (1 for mono, 2 for stereo)
@@ -23,7 +34,7 @@ def write_one_batch(batch_num):
                         rate=RATE,
                         input=True,
                         frames_per_buffer=CHUNK,
-                        input_device_index=0)  # МОЖЕТ НЕ РАБОТАТЬ БЕЗ ПОДКЛЮЧЕННОЙ КАМЕРЫ!
+                        input_device_index=input_device_index)  # МОЖЕТ НЕ РАБОТАТЬ БЕЗ ПОДКЛЮЧЕННОЙ КАМЕРЫ!
     
     print("Recording...")
     
@@ -45,7 +56,7 @@ def write_one_batch(batch_num):
     
     # Save the recorded data as a WAV file
     output_filename = f'output{batch_num:03d}.wav'
-    output_path = os.path.join(os.environ['FOLDER'], output_filename)
+    output_path = os.path.join(folder, output_filename)
     with wave.open(output_path, 'wb') as wf:
         wf.setnchannels(CHANNELS)
         wf.setsampwidth(audio.get_sample_size(FORMAT))
@@ -56,7 +67,15 @@ def write_one_batch(batch_num):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--device-index', type=int, default=-1)
+    parser.add_argument('--folder', type=str)
+    args = parser.parse_args()
     bn = 1
+    if args.device_index == -1:
+        device_index = get_default_input_device_index()
+    else:
+        device_index = args.device_index
     while True:
-        write_one_batch(bn)
+        write_one_batch(bn, input_device_index=device_index, folder=args.folder)
         bn += 1

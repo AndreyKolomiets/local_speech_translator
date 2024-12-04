@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output
+import argparse
 
 load_dotenv()
 
@@ -12,7 +13,7 @@ app = dash.Dash(__name__)
 
 # Function to read and sort text files
 def get_sorted_text_files():
-    files = [f for f in os.listdir(os.environ['FOLDER']) if f.endswith('.txt')]
+    files = [f for f in os.listdir(args.folder) if f.endswith('.txt')]
     files.sort()
     return files
 
@@ -21,7 +22,7 @@ def get_sorted_text_files():
 def read_text_files():
     divs = []
     for file in get_sorted_text_files():
-        with open(os.path.join(os.environ['FOLDER'], file), 'r') as f:
+        with open(os.path.join(args.folder, file), 'r') as f:
             content = f.read()
             divs.append(html.Div([
                 html.H3(file),
@@ -52,4 +53,7 @@ def update_text(n):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--folder', type=str)
+    args = parser.parse_args()
     app.run_server(debug=True)
