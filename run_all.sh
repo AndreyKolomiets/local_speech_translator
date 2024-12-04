@@ -1,0 +1,1 @@
+python run_audio_saving.py & python run_translation.py & python ui.py
