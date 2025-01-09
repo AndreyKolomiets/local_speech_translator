@@ -4,6 +4,8 @@ need to fill `.env` file first with the following variables:
 
 ```
 DEFAULT_INPUT_DEVICE_NAME = <input device name to use as default>
+EXECUTABLE_PATH = <path to pre-built whisper.cpp executable>
+MODEL_PATH = <path to whisper weights>
 ```
 jupyter notebook will list all the devices available
 
