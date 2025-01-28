@@ -56,4 +56,4 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--folder', type=str)
     args = parser.parse_args()
-    app.run_server(debug=True)
+    app.run_server(debug=False)
