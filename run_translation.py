@@ -32,8 +32,18 @@ def main():
                 path_prev_transcript = os.path.join(args.folder, prev_transcript_fname)
                 with open(path_prev_transcript, 'r') as f:
                     prompt = '. '.join(line.strip() for line in f)
-            cmd = f'{EXECUTABLE_PATH} -m {MODEL_PATH} -f {input_path}  -otxt -p 1 -t 16 -l he --translate --prompt "{prompt}"'
-            subprocess.check_output(cmd, shell=True)
+            cmd = [
+                EXECUTABLE_PATH,
+                '-m', MODEL_PATH,
+                '-f', input_path,
+                '-otxt',
+                '-p', '1',
+                '-t', '16',
+                '-l', 'he',
+                '--translate',
+                '--prompt', prompt
+            ]
+            subprocess.check_output(cmd, shell=False)
             prev_transcript_fname = max_fname + '.txt'
         else:
             time.sleep(1)
