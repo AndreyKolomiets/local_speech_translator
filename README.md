@@ -10,3 +10,5 @@ MODEL_PATH = <path to whisper weights>
 jupyter notebook will list all the devices available
 
 ui will start at http://127.0.0.1:8050/
+
+Tested on python 3.10
