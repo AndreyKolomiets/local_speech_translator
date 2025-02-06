@@ -1,12 +1,11 @@
 import os
 from dotenv import load_dotenv
 import dash
-from dash import dcc, html
-from dash.dependencies import Input, Output
+from dash import dcc, html, Input, Output
 import argparse
+from constants import RESET_PROMPT_FNAME
 
 load_dotenv()
-
 
 app = dash.Dash(__name__)
 
@@ -39,7 +38,8 @@ app.layout = html.Div([
         id='interval-component',
         interval=1*1000,  # Update every second
         n_intervals=0
-    )
+    ),
+    html.Button('Reset prompt', id='save-button', n_clicks=0, style={'marginTop': '20px'})
 ])
 
 
@@ -50,6 +50,18 @@ app.layout = html.Div([
 )
 def update_text(n):
     return read_text_files()
+
+
+@app.callback(
+    Output('save-button', 'n_clicks'),
+    Input('save-button', 'n_clicks'),
+    prevent_initial_call=True
+)
+def save_file_to_reset_prompt(n_clicks):
+    file_path = os.path.join(args.folder, RESET_PROMPT_FNAME)
+    with open(file_path, 'w') as f:
+        f.write("Reset prompt")
+    return n_clicks
 
 
 if __name__ == '__main__':
