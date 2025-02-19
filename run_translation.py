@@ -49,7 +49,8 @@ def main():
                 '-t', '16',
                 '-l', 'he',
                 '--translate',
-                '--prompt', prompt
+                '--prompt', prompt,
+                '-np'
             ]
             subprocess.check_output(cmd, shell=False)
             prev_transcript_fname = max_fname + '.txt'
